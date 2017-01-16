@@ -60,29 +60,39 @@ const Table = ({ list, pattern }) =>
 
 const AppPage = ({greet, children}) =>
     <div className="App">
-        <AppHeader hello={greet} />
+        <AppHeader hello={greet} tick='3000' />
             <div className="App-body">
                 {children}
             </div>
         <AppFooter />
     </div>
 
-function AppHeader({hello}) {
-    let even = new Date() % 2;
-//        function tick() {
-//            even = !even;
-//        }
-    return(
-        <div className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
-            <h2>
-              React Tutorial: <em>{hello.replace("_", even ? "HN" : "NH")}</em>
-            </h2>
-        </div>
-    );
+class AppHeader extends Component {
+    constructor(props) {
+        super(props);
+        this.state = props;
+        // how long between ticks and tocks, in milliseconds
+        this.interval = Number(props.tick);
+        const tick = () => this.forceUpdate();    
+        setInterval(tick, this.interval);
+    }
+
+    render() {
+        let now = new Date();
+        
+        let even = (Number(now)/this.interval).toFixed(0) % 2;
+        const { hello } = this.state;
+        return(
+            <div className="App-header">
+                <img src={logo} className="App-logo" alt="logo" />
+                <h2>
+                    React Tutorial: <em>{hello.replace("_", even ? "HN" : "NH")}</em>
+                </h2>
+            </div>
+        );
+    }
 }
 
-setInterval(AppHeader, 1000);
 
 const AppFooter = () =>
     <p className="App-footer">
