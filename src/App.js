@@ -23,7 +23,7 @@ class App extends Component {
     }
     
     render() {
-        const hello = 'Welcome to _ Client';
+        const hello = '_ Client';
         const { list, query } = this.state;
         return (
             <AppPage greet={hello}>
@@ -47,13 +47,13 @@ const Search = ({ value, onChange, children }) =>
     </div>
 
 const Table = ({ list, pattern }) =>
-    <div className="results">
+    <div className="table">
         { list.filter(isSearched(pattern)).map((item) =>
-            <div key={item.objectID}>
-                <span><a href={item.url}>{item.title}</a></span>
-                <span>{item.author}</span>
-                <span>{item.num_comments}</span>
-                <span>{item.points}</span>
+            <div key={item.objectID} className="table-row">
+                <span className="colTitle"><a href={item.url}>{item.title}</a></span>
+                <span className="colAuthor">{item.author}</span>
+                <span className="colComments">{item.num_comments}</span>
+                <span className="colPoints">{item.points}</span>
             </div>
         )}
     </div>
@@ -61,25 +61,31 @@ const Table = ({ list, pattern }) =>
 const AppPage = ({greet, children}) =>
     <div className="App">
         <AppHeader hello={greet} />
-            {children}
+            <div className="App-body">
+                {children}
+            </div>
         <AppFooter />
     </div>
 
 function AppHeader({hello}) {
-    let even = true;
+    let even = new Date() % 2;
 //        function tick() {
 //            even = !even;
 //        }
     return(
         <div className="App-header">
             <img src={logo} className="App-logo" alt="logo" />
-            <h2>{hello.replace("_", even ? "HN" : "NH")}</h2>
+            <h2>
+              React Tutorial: <em>{hello.replace("_", even ? "HN" : "NH")}</em>
+            </h2>
         </div>
     );
 }
 
+setInterval(AppHeader, 1000);
+
 const AppFooter = () =>
-    <p className="App-intro">
+    <p className="App-footer">
         To start, edit <code>src/App.js</code> and save to reload.
     </p>
 
