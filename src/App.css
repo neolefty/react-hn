@@ -1,4 +1,5 @@
 .search { margin-top: 20px; text-align: center; }
+.count { margin-left: 10px; }
 .table { padding-top: 20px; }
 .table-header {
     display: flex; justify-content: space-between;

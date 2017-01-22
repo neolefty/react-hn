@@ -47,25 +47,22 @@ class App extends Component {
 
     onSearchChange(event) {
         this.setState({ query: event.target.value });
-        console.log("query = " + this.state.query);
     }
     
     onSearchSubmit(event) {
         const { query } = this.state;
-        console.log("Query = '" + query + "'");
         this.fetchSearchTopStories(query);
         event.preventDefault(); // don't reload page
     }
     
     getResultCount() {
         return this.state.result &&
-            <span>{this.state.result.hits.length} hits</span>;
+            <span className='count'>{this.state.result.hits.length} hits</span>;
     }
 
     render() {
         const hello = '_ Client';
         const { query, result } = this.state;
-        console.log("rendering -- query = '" + query + "'");
         return (
             <AppPage greet={hello}>
                 <Search value={query} 
@@ -74,7 +71,7 @@ class App extends Component {
                         onSubmit={this.onSearchSubmit}>
                     Search
                 </Search>
-                { result ? <Table list={result.hits} pattern={query} /> : null }
+                { result && <Table list={result.hits} pattern={query} /> }
             </AppPage>
         );
     }
