@@ -20,8 +20,8 @@
 }
 .button-active { border-radius: 0; border-bottom: 1px solod #38bb6c; }
 
-.colTitle { width: 30%; }
-.colAuthor { width: 50%; }
+.colTitle { width: 55%; }
+.colAuthor { width: 25%; }
 .colComments { width: 10%; }
 .colPoints { width: 10%; }
 

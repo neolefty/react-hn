@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import list from './data.js';
+import logo from './logo.svg';
 
-const lcMatch = (q, s) => s.toLowerCase().indexOf(q.toLowerCase()) >= 0;
+const DEFAULT_QUERY = 'redux';
+const PATH_BASE = 'https://hn.algolia.com/api/v1';
+const PATH_SEARCH = '/search';
+const PARAM_SEARCH = 'query=';
+
+const lcMatch = (q, s) => s && s.toLowerCase().indexOf(q.toLowerCase()) >= 0;
 
 const isSearched = (query) => (item) => 
       !query || lcMatch(query, item.title) || lcMatch(query, item.author);
@@ -12,45 +16,89 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            list, // same meaning as 'list: list,'
-            query: '',
+            result: null,
+            query: DEFAULT_QUERY
         };
-        this.onSearchChange = this.onSearchChange.bind(this); // because js
+
+        // bind member functions
+        this.setSearchTopStories = this.setSearchTopStories.bind(this);
+        this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
+        this.onSearchChange = this.onSearchChange.bind(this);
+        this.onSearchSubmit = this.onSearchSubmit.bind(this);
+        this.getResultCount = this.getResultCount.bind(this);
+    }
+
+    setSearchTopStories(result) {
+        this.setState({
+            result: result
+        });
+    }
+
+    fetchSearchTopStories(query) {
+        fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${query}`)
+            .then(response => response.json())
+            .then(result => this.setSearchTopStories(result));
+    }
+
+    componentDidMount() {
+        const { query } = this.state;
+        this.fetchSearchTopStories(query);
     }
 
     onSearchChange(event) {
         this.setState({ query: event.target.value });
+        console.log("query = " + this.state.query);
     }
     
+    onSearchSubmit(event) {
+        const { query } = this.state;
+        console.log("Query = '" + query + "'");
+        this.fetchSearchTopStories(query);
+        event.preventDefault(); // don't reload page
+    }
+    
+    getResultCount() {
+        return this.state.result &&
+            <span>{this.state.result.hits.length} hits</span>;
+    }
+
     render() {
         const hello = '_ Client';
-        const { list, query } = this.state;
+        const { query, result } = this.state;
+        console.log("rendering -- query = '" + query + "'");
         return (
             <AppPage greet={hello}>
-                <Search value={query} onChange={this.onSearchChange}>
+                <Search value={query} 
+                        count={this.getResultCount()}
+                        onChange={this.onSearchChange}
+                        onSubmit={this.onSearchSubmit}>
                     Search
                 </Search>
-                <Table list={list} pattern={query} />
+                { result ? <Table list={result.hits} pattern={query} /> : null }
             </AppPage>
         );
     }
 }
 
-const Search = ({ value, onChange, children }) =>
+const Search = ({ value, count, onChange, onSubmit, children }) =>
     <div className="search">
-        <form>
-            {children}
+        <form onSubmit={onSubmit}>
             <input type="text"
                    value={value} // doesn't seem necessary?
                    onChange={onChange} />
+            <button type="submit">{children}</button>
+            {count}
         </form>
     </div>
 
 const Table = ({ list, pattern }) =>
     <div className="table">
         { list.filter(isSearched(pattern)).map((item) =>
-            <div key={item.objectID} className="table-row">
-                <span className="colTitle"><a href={item.url}>{item.title}</a></span>
+            <div key={item.objectID} className="table-row"
+                 title={item.title+" - "+item.author}>
+                <span className="colTitle">
+                    <a href={item.url}>{item.title}</a>
+                </span>
                 <span className="colAuthor">{item.author}</span>
                 <span className="colComments">{item.num_comments}</span>
                 <span className="colPoints">{item.points}</span>
