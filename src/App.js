@@ -6,6 +6,7 @@ const DEFAULT_QUERY = 'redux';
 const PATH_BASE = 'https://hn.algolia.com/api/v1';
 const PATH_SEARCH = '/search';
 const PARAM_SEARCH = 'query=';
+const COMMENTS_BASE = 'https://news.ycombinator.com/item?id=';
 
 const lcMatch = (q, s) => s && s.toLowerCase().indexOf(q.toLowerCase()) >= 0;
 
@@ -88,6 +89,11 @@ const Search = ({ value, count, onChange, onSubmit, children }) =>
         </form>
     </div>
 
+const Button = ({ onClick, children }) =>
+    <button onClick={onClick} type="button">
+        {children}
+    </button>
+
 const Table = ({ list, pattern }) =>
     <div className="table">
         { list.filter(isSearched(pattern)).map((item) =>
@@ -97,7 +103,11 @@ const Table = ({ list, pattern }) =>
                     <a href={item.url}>{item.title}</a>
                 </span>
                 <span className="colAuthor">{item.author}</span>
-                <span className="colComments">{item.num_comments}</span>
+                <span className="colComments">
+                     <a href={`${COMMENTS_BASE}${item.objectID}`}>
+                         {item.num_comments}
+                     </a>
+                </span>
                 <span className="colPoints">{item.points}</span>
             </div>
         )}

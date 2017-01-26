@@ -1,5 +1,5 @@
-body { color: #222; background: #f4f4f4; font: 500 18px sans-serif; margin: 0px; }
-a { color: #222; }
+body { color: #333; background: #f4f4f4; font: 500 18px sans-serif; margin: 0px; }
+a { color: #06F; text-decoration: none; }
 a:hover { text-decoration: underline; }
 ul, li { list-style: none; padding: 0px; margin: 0px; }
 *:focus { outline: none; }
