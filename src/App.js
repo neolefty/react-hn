@@ -16,23 +16,42 @@ const isSearched = (query) => (item) =>
 class App extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
-            result: null,
+            answer: null,
             query: DEFAULT_QUERY
         };
 
         // bind member functions
-        this.setSearchTopStories = this.setSearchTopStories.bind(this);
         this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
+        this.setSearchTopStories = this.setSearchTopStories.bind(this);
         this.onSearchChange = this.onSearchChange.bind(this);
         this.onSearchSubmit = this.onSearchSubmit.bind(this);
-        this.getResultCount = this.getResultCount.bind(this);
+        this.getHitCount = this.getHitCount.bind(this);
+        this.fetchOC = this.fetchOC.bind(this)
+        this.setOC = this.setOC.bind(this)
     }
 
-    setSearchTopStories(result) {
+    setSearchTopStories(answer) {
         this.setState({
-            result: result
+            answer: answer
         });
+    }
+
+    setOC(blob) {
+        var url = URL.createObjectURL(blob);
+        console.log(`${blob.type} ${blob.size} bytes: ${url}`);
+        this.setState({
+            oc: blob,
+            ocUrl: 'https://orangecrayon.com/images/orangecrayon.jpg'
+            // ocUrl: url
+        });
+    }
+
+    fetchOC() {
+        fetch('https://orangecrayon.com/images/orangecrayon.jpg')
+            .then(response => response.blob())
+            .then(blob => this.setOC(blob));
     }
 
     fetchSearchTopStories(query) {
@@ -44,6 +63,7 @@ class App extends Component {
     componentDidMount() {
         const { query } = this.state;
         this.fetchSearchTopStories(query);
+        this.fetchOC();
     }
 
     onSearchChange(event) {
@@ -56,27 +76,31 @@ class App extends Component {
         event.preventDefault(); // don't reload page
     }
     
-    getResultCount() {
-        return this.state.result &&
-            <span className='count'>{this.state.result.hits.length} hits</span>;
+    getHitCount() {
+        return this.state.answer &&
+            <span className='count'>{this.state.answer.hits.length} hits</span>;
     }
 
     render() {
         const hello = '_ Client';
-        const { query, result } = this.state;
+        const { query, answer, ocUrl } = this.state;
         return (
             <AppPage greet={hello}>
                 <Search value={query} 
-                        count={this.getResultCount()}
+                        count={this.getHitCount()}
                         onChange={this.onSearchChange}
                         onSubmit={this.onSearchSubmit}>
                     Search
                 </Search>
-                { result && <Table list={result.hits} pattern={query} /> }
+                { answer && <Table list={answer.hits} pattern={query} /> }
+                { ocUrl && <OC /> }
             </AppPage>
         );
     }
 }
+
+const OC = ({ ocUrl }) =>
+      <img src={ocUrl} alt="Orange Crayon"/>
 
 const Search = ({ value, count, onChange, onSubmit, children }) =>
     <div className="search">
