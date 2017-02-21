@@ -40,18 +40,21 @@ class App extends Component {
 
     setOC(blob) {
         var url = URL.createObjectURL(blob);
-        console.log(`${blob.type} ${blob.size} bytes: ${url}`);
+        // console.log(`${blob.type} ${blob.size} bytes: ${url}`);
         this.setState({
-            oc: blob,
-            ocUrl: 'https://orangecrayon.com/images/orangecrayon.jpg'
-            // ocUrl: url
+            ocUrl: url
         });
+	// console.log("New state = " + this.state);
     }
 
     fetchOC() {
-        fetch('https://orangecrayon.com/images/orangecrayon.jpg')
-            .then(response => response.blob())
-            .then(blob => this.setOC(blob));
+	if ('ocUrl' in this.state)
+	    console.log("Already set");
+	else {
+            fetch('https://orangecrayon.com/images/orangecrayon.jpg')
+		.then(response => response.blob())
+		.then(blob => this.setOC(blob));
+	}
     }
 
     fetchSearchTopStories(query) {
@@ -63,7 +66,6 @@ class App extends Component {
     componentDidMount() {
         const { query } = this.state;
         this.fetchSearchTopStories(query);
-        this.fetchOC();
     }
 
     onSearchChange(event) {
@@ -92,15 +94,23 @@ class App extends Component {
                         onSubmit={this.onSearchSubmit}>
                     Search
                 </Search>
+		<Right>
+                    <Link onClick={this.fetchOC}>OC</Link>
+                    { ocUrl && <OC src={ocUrl}/> }
+	        </Right>
                 { answer && <Table list={answer.hits} pattern={query} /> }
-                { ocUrl && <OC /> }
             </AppPage>
         );
     }
 }
 
-const OC = ({ ocUrl }) =>
-      <img src={ocUrl} alt="Orange Crayon"/>
+const Right = ({children}) =>
+    <div className="righto">
+        {children}
+    </div>
+
+const OC = ({src}) =>
+    <img src={src} alt="Orange Crayon" height="40"/>
 
 const Search = ({ value, count, onChange, onSubmit, children }) =>
     <div className="search">
@@ -112,6 +122,11 @@ const Search = ({ value, count, onChange, onSubmit, children }) =>
             {count}
         </form>
     </div>
+
+const Link = ({ onClick, children }) =>
+    <button onClick={onClick} type="button">
+        {children}
+    </button>
 
 const Button = ({ onClick, children }) =>
     <button onClick={onClick} type="button">

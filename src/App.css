@@ -1,3 +1,4 @@
+.righto { float: right; layout: block; }
 
 .search { margin-top: 20px; text-align: center; }
 .count { margin-left: 10px; }
