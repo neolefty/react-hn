@@ -28,8 +28,8 @@ class App extends Component {
         this.onSearchChange = this.onSearchChange.bind(this);
         this.onSearchSubmit = this.onSearchSubmit.bind(this);
         this.getHitCount = this.getHitCount.bind(this);
-        this.fetchOC = this.fetchOC.bind(this)
-        this.setOC = this.setOC.bind(this)
+        this.fetchOC = this.fetchOC.bind(this);
+        this.setOC = this.setOC.bind(this);
     }
 
     setSearchTopStories(answer) {
@@ -39,7 +39,7 @@ class App extends Component {
     }
 
     setOC(blob) {
-        var url = URL.createObjectURL(blob);
+        const url = URL.createObjectURL(blob);
         // console.log(`${blob.type} ${blob.size} bytes: ${url}`);
         this.setState({
             ocUrl: url
@@ -48,13 +48,13 @@ class App extends Component {
     }
 
     fetchOC() {
-	if ('ocUrl' in this.state)
-	    console.log("Already set");
-	else {
+        if ('ocUrl' in this.state)
+            console.log("Already set");
+        else {
             fetch('https://orangecrayon.com/images/orangecrayon.jpg')
-		.then(response => response.blob())
-		.then(blob => this.setOC(blob));
-	}
+                .then(response => response.blob())
+                .then(blob => this.setOC(blob));
+        }
     }
 
     fetchSearchTopStories(query) {
@@ -107,10 +107,10 @@ class App extends Component {
 const Right = ({children}) =>
     <div className="righto">
         {children}
-    </div>
+    </div>;
 
 const OC = ({src}) =>
-    <img src={src} alt="Orange Crayon" height="40"/>
+    <img src={src} alt="Orange Crayon" height="40"/>;
 
 const Search = ({ value, count, onChange, onSubmit, children }) =>
     <div className="search">
@@ -118,20 +118,20 @@ const Search = ({ value, count, onChange, onSubmit, children }) =>
             <input type="text"
                    value={value} // doesn't seem necessary?
                    onChange={onChange} />
-            <button type="submit">{children}</button>
+            <Button onClick={onSubmit} children={children} />
             {count}
         </form>
-    </div>
+    </div>;
 
 const Link = ({ onClick, children }) =>
     <button onClick={onClick} type="button">
         {children}
-    </button>
+    </button>;
 
 const Button = ({ onClick, children }) =>
     <button onClick={onClick} type="button">
         {children}
-    </button>
+    </button>;
 
 const Table = ({ list, pattern }) =>
     <div className="table">
@@ -150,7 +150,7 @@ const Table = ({ list, pattern }) =>
                 <span className="colPoints">{item.points}</span>
             </div>
         )}
-    </div>
+    </div>;
 
 const AppPage = ({greet, children}) =>
     <div className="App">
@@ -159,7 +159,7 @@ const AppPage = ({greet, children}) =>
                 {children}
             </div>
         <AppFooter />
-    </div>
+    </div>;
 
 class AppHeader extends Component {
     constructor(props) {
@@ -191,6 +191,6 @@ class AppHeader extends Component {
 const AppFooter = () =>
     <p className="App-footer">
         To start, edit <code>src/App.js</code> and save to reload.
-    </p>
+    </p>;
 
 export default App;
